@@ -38,7 +38,6 @@ namespace sc {
 
           //=== Public interface
       public:
-
           //=== Special members
           // Contrutor default
           array()
