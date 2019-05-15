@@ -2,3 +2,21 @@
 .DS_Store
 */.DS_Store
 /build/*
+run_tests
+/include/array.h
+
+#CMake Files
+CMakeLists.txt.user
+CMakeCache.txt
+CMakeFiles
+CMakeScripts
+Testing
+Makefile
+cmake_install.cmake
+install_manifest.txt
+compile_commands.json
+CTestTestfile.cmake
+_deps
+
+#Doxygen Files
+/docs
