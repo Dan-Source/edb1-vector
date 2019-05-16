@@ -88,7 +88,7 @@ TEST(IntVector, MoveConstructor)
     for (auto i{0u}; i < vec2.size(); ++i)
         ASSERT_EQ(i + 1, vec2[i]);
 }
-/*
+
 TEST(IntVector, AssignOperator)
 {
     // Range = the entire vector.
@@ -122,6 +122,7 @@ TEST(IntVector, MoveAssignOperator)
         ASSERT_EQ(i + 1, vec2[i]);
 }
 
+/*
 TEST(IntVector, ListInitializerAssign)
 {
     // Range = the entire vector.
