@@ -98,6 +98,34 @@ public:
     {
     }
 
+    T &operator[](size_type pos)
+    {
+        return data[pos];
+    }
+
+    //=== [II] ITERATORS
+    iterator begin(void)
+    {
+        iterator it(&data[0]);
+        return it;
+    }
+    iterator end(void)
+    {
+        iterator it(&data[SIZE]);
+        return it;
+    }
+    const_iterator cbegin(void) const
+    {
+        const_iterator it(&data[0]);
+        return it;
+    }
+    const_iterator cend(void) const
+    {
+        const_iterator it(&data[SIZE]);
+        return it;
+    }
+
+    //=== [III] Capacity
     /// Return the number of elements in the container.
     size_type size() const
     {
@@ -121,18 +149,42 @@ public:
     {
         return SIZE == 0;
     }
+    /*
+    void clear(void);
+    void push_front(const_reference);
+    void push_back(const_reference);
+    void pop_back(void);
+    void pop_front(void);
+    iterator insert(iterator, const_reference);
+    template <typename InputItr>
+    iterator insert(iterator, InputItr, InputItr);
+    iterator insert(iterator, const std::initializer_list<value_type> &);
+    void reserve(size_type);
+    void shrink_to_fit(void);
+    void assign(size_type, const_reference);
+    void assign(const std::initializer_list<T> &);
+    template <typename InputItr>
+    void assign(InputItr, InputItr);
 
-    T &operator[](size_type pos)
-    {
-        return data[pos];
-    }
+    iterator erase(iterator, iterator);
+    iterator erase(iterator);
 
-    //=== [II] ITERATORS
-    iterator begin(void);
-    iterator end(void);
-    const_iterator cbegin(void) const;
-    const_iterator cend(void) const;
+    // [V] Element access
+    const_reference back(void) const;
+    reference back(void);
+    const_reference front(void) const;
+    reference front(void);
+    const_reference operator[](size_type) const;
+    reference operator[](size_type);
+    const_reference at(size_type) const;
+    reference at(size_type);
+    pointer data(void);
+    const_reference data(void) const;
 
+    // [VI] Friend functions
+    friend std::ostream &operator<<(std::ostream &, const vector<T> &);
+    friend void swap(vector<T> &, vector<T> &);
+*/
 private:
     size_type SIZE;
     size_type CAPACITY;

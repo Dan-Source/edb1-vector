@@ -12,16 +12,26 @@ public:
 
   MyIterator() {}
 
-  MyIterator &operator=(const MyIterator &) = default {}
+  MyIterator &operator=(const MyIterator &other)
+  {
+    current = other.current;
+    return *this;
+  }
 
-  MyIterator(const MyIterator &) = default {}
+  MyIterator(pointer ref)
+  {
+    current = ref;
+  }
 
-  reference operator*() const {}
+  reference operator*() const
+  {
+    return *current;
+  }
 
   pointer operator->(void)const
   {
-    assert(m_ptr != nullptr);
-    return m_ptr;
+    assert(current != nullptr);
+    return current;
   }
 
   MyIterator &operator++() // ++it;
@@ -30,32 +40,84 @@ public:
     return *this;
   }
 
-  MyIterator operator++(int n); // it++;
+  MyIterator operator++(int n) // it++;
   {
-    MyIterator temp = this;
+    MyIterator temp = *this;
     current++;
     return temp;
   }
 
-  MyIterator &operator--(); // --it;
+  MyIterator &operator--() // --it;
   {
     current--;
     return *this;
   }
 
-  MyIterator operator--(int n); // it--;
+  MyIterator operator--(int n) // it--;
+  {
+    MyIterator temp = this;
+    current--;
+    return temp;
+  }
 
-  friend MyIterator operator+(difference_type, MyIterator);
+  friend MyIterator operator+(difference_type diff, MyIterator it)
+  {
+    it.current += diff;
+    return it;
+  }
 
-  friend MyIterator operator+(MyIterator, difference_type);
+  friend MyIterator operator+(MyIterator it, difference_type diff)
+  {
+    it.current += diff;
+    return it;
+  }
 
-  friend MyIterator operator-(difference_type, MyIterator);
+  friend MyIterator operator+(MyIterator it, MyIterator other)
+  {
+    it.current += other.current;
+    return it;
+  }
 
-  friend MyIterator operator-(MyIterator, difference_type);
+  friend MyIterator operator-(difference_type diff, MyIterator it)
+  {
+    it.current -= diff;
+    return it;
+  }
 
-  bool operator==(const MyIterator &) const;
+  friend MyIterator operator-(MyIterator it, MyIterator other)
+  {
+    it.current -= other.current;
+    return it;
+  }
 
-  bool operator!=(const MyIterator &) const;
+  friend MyIterator operator-(MyIterator it, difference_type diff)
+  {
+    return it;
+  }
+
+  bool operator==(const MyIterator &other) const
+  {
+    if (*current == *(other.current))
+    {
+      return true;
+    }
+    else
+    {
+      return false;
+    }
+  }
+
+  bool operator!=(const MyIterator &other) const
+  {
+    if (*current != *(other.current))
+    {
+      return true;
+    }
+    else
+    {
+      return false;
+    }
+  }
 
 private:
   T *current;
