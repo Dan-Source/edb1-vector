@@ -91,7 +91,7 @@ TEST(IntVector, AssignOperator)
         ASSERT_EQ(i + 1, vec2[i]);
 }
 
-/*
+
 TEST(IntVector, ListInitializerAssign)
 {
     // Range = the entire vector.
@@ -230,6 +230,7 @@ TEST(IntVector, Front)
         vec.pop_front();
     }
 }
+
 TEST(IntVector, FrontConst)
 {
     // #1 From an empty vector.
@@ -389,7 +390,7 @@ TEST(IntVector, ShrinkToFit)
     for (const auto &e : vec)
         ASSERT_EQ(e, ++i);
 }
-
+/*
 TEST(IntVector, OperatorEqual)
 {
     // #1 From an empty vector.

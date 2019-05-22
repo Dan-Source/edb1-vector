@@ -7,6 +7,8 @@
 #include <algorithm>        // std::min
 #include <initializer_list> // std::initializer_list
 #include <iterator>
+#include <stdexcept> //std::out_of_range
+#include <string> //std::to_string
 
 #include "./MyIterator.h"
 
@@ -30,7 +32,7 @@ public:
     {
         SIZE = 0;
         CAPACITY = 0;
-        data = new T[0];
+        data = new T[CAPACITY];
     }
 
     /// Constructs the list with count default-inserted instances of T
@@ -98,11 +100,6 @@ public:
     {
     }
 
-    T &operator[](size_type pos)
-    {
-        return data[pos];
-    }
-
     //=== [II] ITERATORS
     iterator begin(void)
     {
@@ -132,16 +129,10 @@ public:
         return SIZE;
     }
 
-    /// Return size of allocated storage capacity.
+    /// Return the internal storage capacity of the array.
     size_type capacity() const
     {
         return CAPACITY;
-    }
-
-    /// Remove all elements from the container.
-    void clear()
-    {
-        SIZE = 0;
     }
 
     /// Returns true if the container contains no elements, and false otherwise.
@@ -149,12 +140,79 @@ public:
     {
         return SIZE == 0;
     }
+
+    //=== [IV] Modifiers
+    /// Remove all elements from the container.
+    void clear()
+    {
+        SIZE = 0;
+    }
+
+    /// Adds value to the front of the list.
+    void push_front(const_reference value) {
+        reserve(SIZE + 1);
+
+        for (int i = SIZE; i > 0; i--)
+            data[i] = data[i - 1];
+
+        data[0] = value;
+
+        ++SIZE;
+    }
+
+    /// Adds value to the end of the list.
+    void push_back(const_reference value) {
+        reserve(SIZE + 1);
+        data[SIZE] = value;
+        ++SIZE;
+    }
+
+    /// Removes the object at the end of the list.
+    void pop_back () {
+        --SIZE;
+    }
+
+    /// Removes the object at the front of the list.
+    void pop_front () {
+        for (auto i(0u); i < SIZE - 1; i++)
+            data[i] = data[i+1];
+        
+        --SIZE;
+    }
+    
+    void reserve (size_type new_cap) {
+        if (new_cap < capacity()) return;
+
+        CAPACITY = CAPACITY == 0 ? 2 : 2 * CAPACITY;        
+        T *newData = new T[CAPACITY];
+
+        for (auto i(0u); i < SIZE; i++)
+            newData[i] = data[i];
+
+        data = newData;
+    }
+
+    /// Requests the removal of unused capacity.
+    void shrink_to_fit () {
+        CAPACITY = SIZE;
+        T *newData = new T[CAPACITY];
+
+        for (auto i(0u); i < SIZE; i++)
+            newData[i] = data[i];
+
+        data = newData;
+    }
+
+    void assign(size_type count, const_reference value) {
+        reserve(count);
+
+        for (auto i(0u); i < count; i++)
+            data[i] = value;
+
+        SIZE = count;
+    }
+
     /*
-    void clear(void);
-    void push_front(const_reference);
-    void push_back(const_reference);
-    void pop_back(void);
-    void pop_front(void);
     iterator insert(iterator, const_reference);
     template <typename InputItr>
     iterator insert(iterator, InputItr, InputItr);
@@ -167,17 +225,53 @@ public:
     void assign(InputItr, InputItr);
 
     iterator erase(iterator, iterator);
-    iterator erase(iterator);
+    iterator erase(iterator);*/
 
-    // [V] Element access
-    const_reference back(void) const;
-    reference back(void);
-    const_reference front(void) const;
-    reference front(void);
-    const_reference operator[](size_type) const;
-    reference operator[](size_type);
-    const_reference at(size_type) const;
-    reference at(size_type);
+    //=== [V] Element access
+    ///  Returns the object at the beginning of the list.
+    const_reference front() const {
+        return data[0];
+    }
+
+    /// Returns the object at the beginning of the list.
+    reference front () {
+        return data[0];
+    }
+    
+    ///  Returns the object at the end of the list.
+    const_reference back() const {
+        return data[SIZE - 1];
+    }
+
+    ///  Returns the object at the end of the list.
+    reference back () {
+        return data[SIZE - 1];
+    }
+
+    /// Returns the object at the index pos in the array, with no bounds-checking.
+    reference operator[](size_type pos)
+    {
+        return data[pos];
+    }
+
+    /// Returns the object at the index pos in the array, with no bounds-checking.
+    const_reference operator[](size_type pos) const {
+        return data[pos];
+    }
+
+    /// Returns the object at the index pos in the array, with bounds-checking. 
+    const_reference at(size_type pos) const {
+        if(pos < 0 || pos >= SIZE) throw std::out_of_range(std::to_string(pos));
+        return data[pos];
+    }
+
+    /// Returns the object at the index pos in the array, with bounds-checking. 
+    reference at(size_type pos) {
+        if(pos < 0 || pos >= SIZE) throw std::out_of_range(std::to_string(pos));
+        return data[pos];
+    }
+    /*
+
     pointer data(void);
     const_reference data(void) const;
 
