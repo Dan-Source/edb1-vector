@@ -10,36 +10,46 @@ public:
   typedef T &reference;                                      //!< Reference to the value type.
   typedef std::bidirectional_iterator_tag iterator_category; //!< Iterator category.
 
-  MyIterator() {}
+  /// Default constructor that creates an nullptr.
+  MyIterator()
+  {
+    current = nullptr;
+  }
 
+  /// Copy assignment operator.
   MyIterator &operator=(const MyIterator &other)
   {
     current = other.current;
     return *this;
   }
 
+  /// Constructs a iterator from a address reference.
   MyIterator(pointer ref)
   {
     current = ref;
   }
 
+  /// Returns a value from the iterator pointer.
   reference operator*() const
   {
     return *current;
   }
 
+  /// Return a pointer to the location in the vector the it points to.
   pointer operator->(void)const
   {
     assert(current != nullptr);
     return current;
   }
 
+  /// Advances iterator to the next location within the vector and returns itself.
   MyIterator &operator++() // ++it;
   {
     current++;
     return *this;
   }
 
+  /// Advances iterator to the next location within the vector and returns itself before the increment.
   MyIterator operator++(int n) // it++;
   {
     MyIterator temp = *this;
@@ -47,78 +57,73 @@ public:
     return temp;
   }
 
+  /// Backs the iterator to the next location within the vector and returns itself.
   MyIterator &operator--() // --it;
   {
     current--;
     return *this;
   }
 
+  /// Backs the iterator to the next location within the vector and returns itself before that.
   MyIterator operator--(int n) // it--;
   {
-    MyIterator temp = this;
+    MyIterator temp = *this;
     current--;
     return temp;
   }
 
-  friend MyIterator operator+(difference_type diff, MyIterator it)
+  /// Return a iterator pointing to the n-th sucessor in the vector from `it`.
+  friend MyIterator operator+(difference_type n, MyIterator it)
   {
-    it.current += diff;
+    it.current += n;
     return it;
   }
 
-  friend MyIterator operator+(MyIterator it, difference_type diff)
+  /// Return a iterator pointing to the n-th sucessor in the vector from `it`.
+  friend MyIterator operator+(MyIterator it, difference_type n)
   {
-    it.current += diff;
+    it.current += n;
     return it;
   }
 
-  friend MyIterator operator+(MyIterator it, MyIterator other)
+  /// Return the sum `std::ptrdiff_t` from two iterators.
+  friend difference_type operator+(MyIterator it, MyIterator other)
   {
-    it.current += other.current;
+    return it.current + other.current;
+  }
+
+  /// Return a iterator pointing to the n-th predecessor in the vector from `it`.
+  friend MyIterator operator-(difference_type n, MyIterator it)
+  {
+    it.current -= n;
     return it;
   }
 
-  friend MyIterator operator-(difference_type diff, MyIterator it)
+  /// Return a iterator pointing to the n-th predecessor in the vector from `it`.
+  friend MyIterator operator-(MyIterator it, difference_type n)
   {
-    it.current -= diff;
+    it.current -= n;
     return it;
   }
 
-  friend MyIterator operator-(MyIterator it, MyIterator other)
+  /// Return the difference `std::ptrdiff_t` from two iterators.
+  friend difference_type operator-(MyIterator it, MyIterator other)
   {
-    it.current -= other.current;
-    return it;
+    return it.current - other.current;
   }
 
-  friend MyIterator operator-(MyIterator it, difference_type diff)
-  {
-    return it;
-  }
-
+  /// Returns true if both iterators refer to the same location within the vector, and false otherwise.
   bool operator==(const MyIterator &other) const
   {
-    if (*current == *(other.current))
-    {
-      return true;
-    }
-    else
-    {
-      return false;
-    }
+    return (current - other.current) == 0;
   }
 
+  /// Returns true if both iterators refer to differents location within the vector, and false otherwise.
   bool operator!=(const MyIterator &other) const
   {
-    if (*current != *(other.current))
-    {
-      return true;
-    }
-    else
-    {
-      return false;
-    }
+    return (current - other.current) != 0;
   }
 
 private:
-  T *current;
+  T *current; //<! The pointer to the vector data.
 };

@@ -8,7 +8,7 @@
 #include <initializer_list> // std::initializer_list
 #include <iterator>
 #include <stdexcept> //std::out_of_range
-#include <string> //std::to_string
+#include <string>    //std::to_string
 
 #include "./MyIterator.h"
 
@@ -18,7 +18,7 @@ template <typename T>
 class vector
 {
 public:
-    using size_type = unsigned long;
+    using size_type = unsigned long;            //!< The size type.
     using value_type = T;                       //!< The value type.
     using pointer = value_type *;               //!< Pointer to a value stored in the container.
     using reference = value_type &;             //!< Reference to a value stored in the container.
@@ -47,7 +47,7 @@ public:
     template <typename InputIt>
     vector(InputIt first, InputIt last)
     {
-        SIZE = std::distance(first, last);
+        SIZE = last - first;
         CAPACITY = 2 * SIZE;
         data = new T[CAPACITY];
 
@@ -98,20 +98,28 @@ public:
     /// Replaces the contents with those identified by initializer list ilist.
     vector &operator=(std::initializer_list<T> ilist)
     {
+        SIZE = ilist.size();
+        CAPACITY = SIZE;
+        data = new T[CAPACITY];
+
+        for (auto i(0u); i < SIZE; i++)
+            data[i] = *(ilist.begin() + i);
+
+        return *this;
     }
 
     //=== [II] ITERATORS
-    iterator begin(void)
+    iterator begin()
     {
         iterator it(&data[0]);
         return it;
     }
-    iterator end(void)
+    iterator end()
     {
         iterator it(&data[SIZE]);
         return it;
     }
-    const_iterator cbegin(void) const
+    const_iterator cbegin() const
     {
         const_iterator it(&data[0]);
         return it;
@@ -149,7 +157,8 @@ public:
     }
 
     /// Adds value to the front of the list.
-    void push_front(const_reference value) {
+    void push_front(const_reference value)
+    {
         reserve(SIZE + 1);
 
         for (int i = SIZE; i > 0; i--)
@@ -161,29 +170,35 @@ public:
     }
 
     /// Adds value to the end of the list.
-    void push_back(const_reference value) {
+    void push_back(const_reference value)
+    {
         reserve(SIZE + 1);
         data[SIZE] = value;
         ++SIZE;
     }
 
     /// Removes the object at the end of the list.
-    void pop_back () {
+    void pop_back()
+    {
         --SIZE;
     }
 
     /// Removes the object at the front of the list.
-    void pop_front () {
+    void pop_front()
+    {
         for (auto i(0u); i < SIZE - 1; i++)
-            data[i] = data[i+1];
-        
+            data[i] = data[i + 1];
+
         --SIZE;
     }
-    
-    void reserve (size_type new_cap) {
-        if (new_cap < capacity()) return;
 
-        CAPACITY = CAPACITY == 0 ? 2 : 2 * CAPACITY;        
+    /// Increases the storage capacity of the array to a value that’s is greater or equal to new_cap.
+    void reserve(size_type new_cap)
+    {
+        if (new_cap < capacity())
+            return;
+
+        CAPACITY = CAPACITY == 0 ? 2 : 2 * CAPACITY;
         T *newData = new T[CAPACITY];
 
         for (auto i(0u); i < SIZE; i++)
@@ -193,7 +208,8 @@ public:
     }
 
     /// Requests the removal of unused capacity.
-    void shrink_to_fit () {
+    void shrink_to_fit()
+    {
         CAPACITY = SIZE;
         T *newData = new T[CAPACITY];
 
@@ -203,48 +219,207 @@ public:
         data = newData;
     }
 
-    void assign(size_type count, const_reference value) {
-        reserve(count);
+    /// Adds value into the list before the position given by the iterator
+    iterator insert(iterator pos, const_reference value)
+    {
+        std::ptrdiff_t offset = pos - begin();
 
-        for (auto i(0u); i < count; i++)
-            data[i] = value;
+        if (offset > SIZE)
+            return begin();
 
-        SIZE = count;
+        reserve(SIZE + 1);
+        SIZE++;
+
+        iterator new_pos = begin() + offset;
+        iterator end(&data[SIZE - 1]);
+
+        while (end != new_pos)
+        {
+            *end = *(end - 1);
+            end--;
+        }
+
+        *end = value;
+        return new_pos;
     }
 
-    /*
-    iterator insert(iterator, const_reference);
+    /// Inserts elements from the range [first; last) before pos
     template <typename InputItr>
-    iterator insert(iterator, InputItr, InputItr);
-    iterator insert(iterator, const std::initializer_list<value_type> &);
-    void reserve(size_type);
-    void shrink_to_fit(void);
-    void assign(size_type, const_reference);
-    void assign(const std::initializer_list<T> &);
-    template <typename InputItr>
-    void assign(InputItr, InputItr);
+    iterator insert(iterator pos, InputItr first, InputItr last)
+    {
 
-    iterator erase(iterator, iterator);
-    iterator erase(iterator);*/
+        std::ptrdiff_t offset = pos - begin();
+
+        if (offset > SIZE)
+            return begin();
+
+        int dist = std::distance(first, last);
+
+        reserve(SIZE + dist);
+        SIZE += dist;
+
+        iterator new_pos = begin() + offset;
+        iterator old_end = end() - (dist + 1);
+        iterator end(&data[SIZE - 1]);
+
+        while (old_end != (new_pos - 1))
+        {
+            *end = *old_end;
+            old_end--;
+            end--;
+        }
+
+        last--;
+        while (last != (first - 1))
+        {
+            *end = *last;
+            last--;
+            end--;
+        }
+
+        return new_pos;
+    }
+
+    /// Inserts elements from the initializer_list `ilist` before `pos`
+    iterator insert(iterator pos, const std::initializer_list<value_type> &ilist)
+    {
+        std::ptrdiff_t offset = pos - begin();
+
+        if (offset > SIZE)
+            return begin();
+
+        int size = ilist.size();
+
+        reserve(SIZE + size);
+        SIZE += size;
+
+        iterator new_pos = begin() + offset;
+        iterator old_end = end() - (size + 1);
+        iterator end(&data[SIZE - 1]);
+        while (old_end != (new_pos - 1))
+        {
+            *end = *old_end;
+            old_end--;
+            end--;
+        }
+
+        auto first = ilist.begin();
+        auto last = ilist.end() - 1;
+        while (last != (first - 1))
+        {
+            *end = *last;
+            last--;
+            end--;
+        }
+        return new_pos;
+    }
+
+    /// Replaces the contents with `count` copies of `value`
+    void assign(size_type count, const_reference value)
+    {
+        SIZE = count;
+        if (count > capacity())
+            CAPACITY = count;
+
+        T *newData = new T[CAPACITY];
+
+        for (auto i(0u); i < SIZE; i++)
+            newData[i] = value;
+
+        data = newData;
+    }
+
+    /// Replaces the contents of the list with copies of the elements in the `std::initializer_list`
+    void assign(const std::initializer_list<T> &ilist)
+    {
+        int size = ilist.size();
+        SIZE = size;
+        if (size > capacity())
+            CAPACITY = size;
+
+        T *newData = new T[CAPACITY];
+
+        for (auto i(0u); i < SIZE; i++)
+            data[i] = *(ilist.begin() + i);
+
+        data = newData;
+    }
+
+    /// Replaces the contents of the list with copies of the elements in the range [first; last)
+    template <typename InputItr>
+    void assign(InputItr first, InputItr last)
+    {
+        int size = last - first;
+        SIZE = size;
+        if (size > capacity())
+            CAPACITY = size;
+
+        T *newData = new T[CAPACITY];
+
+        iterator it = &newData[0];
+        while (first != last)
+        {
+            *it = *first;
+            it++;
+            first++;
+        }
+
+        data = newData;
+    }
+
+    /// Removes elements in the range [first; last) and returns an iterator to the element that follows last before the call.
+    iterator erase(iterator first, iterator last)
+    {
+        iterator past_last = first;
+        iterator actual_last = last;
+        while (first != actual_last)
+        {
+            *first = *last;
+            SIZE--;
+            first++;
+            last++;
+        }
+
+        return past_last;
+    }
+
+    /// Removes the object at position pos and
+    iterator erase(iterator pos)
+    {
+        iterator past_last = pos;
+        while (pos != end())
+        {
+            *pos = *(pos + 1);
+            pos++;
+        }
+
+        SIZE--;
+
+        return past_last;
+    }
 
     //=== [V] Element access
     ///  Returns the object at the beginning of the list.
-    const_reference front() const {
+    const_reference front() const
+    {
         return data[0];
     }
 
     /// Returns the object at the beginning of the list.
-    reference front () {
+    reference front()
+    {
         return data[0];
     }
-    
+
     ///  Returns the object at the end of the list.
-    const_reference back() const {
+    const_reference back() const
+    {
         return data[SIZE - 1];
     }
 
     ///  Returns the object at the end of the list.
-    reference back () {
+    reference back()
+    {
         return data[SIZE - 1];
     }
 
@@ -255,30 +430,61 @@ public:
     }
 
     /// Returns the object at the index pos in the array, with no bounds-checking.
-    const_reference operator[](size_type pos) const {
+    const_reference operator[](size_type pos) const
+    {
         return data[pos];
     }
 
-    /// Returns the object at the index pos in the array, with bounds-checking. 
-    const_reference at(size_type pos) const {
-        if(pos < 0 || pos >= SIZE) throw std::out_of_range(std::to_string(pos));
+    /// Returns the object at the index pos in the array, with bounds-checking.
+    const_reference at(size_type pos) const
+    {
+        if (pos < 0 || pos >= SIZE)
+            throw std::out_of_range(std::to_string(pos));
         return data[pos];
     }
 
-    /// Returns the object at the index pos in the array, with bounds-checking. 
-    reference at(size_type pos) {
-        if(pos < 0 || pos >= SIZE) throw std::out_of_range(std::to_string(pos));
+    /// Returns the object at the index pos in the array, with bounds-checking.
+    reference at(size_type pos)
+    {
+        if (pos < 0 || pos >= SIZE)
+            throw std::out_of_range(std::to_string(pos));
         return data[pos];
     }
-    /*
 
-    pointer data(void);
-    const_reference data(void) const;
+    /// Check if contents of both vectors are equal
+    bool operator==(const vector &other) const
+    {
+        if (size() == other.size())
+        {
+            for (auto i(0u); i < SIZE; i++)
+                if (data[i] != other.data[i])
+                    return false;
+        }
+        else
+        {
+            return false;
+        }
 
-    // [VI] Friend functions
-    friend std::ostream &operator<<(std::ostream &, const vector<T> &);
-    friend void swap(vector<T> &, vector<T> &);
-*/
+        return true;
+    }
+
+    /// Check if contents of both vectors are different
+    bool operator!=(const vector &other) const
+    {
+        if (size() != other.size())
+        {
+            return true;
+        }
+        else
+        {
+            for (auto i(0u); i < SIZE; i++)
+                if (data[i] != other.data[i])
+                    return true;
+        }
+
+        return false;
+    }
+
 private:
     size_type SIZE;
     size_type CAPACITY;
