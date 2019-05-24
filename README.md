@@ -3,13 +3,13 @@
 ## Summary
 [1. Introduction](#1-Introduction)
 
-[2. Introduction](#2-The-classes)
+[2. The classes](#2-The-classes)
 
-[3. Introduction](#3-Compiling)
+[3. Compiling](#3-Compiling)
 
-[4. Introduction](#4-Using)
+[4. Using](#4-Using)
 
-[5. Introduction](#5-Authorship)
+[5. Authorship](#5-Authorship)
 
 ## 1. Introduction
 
