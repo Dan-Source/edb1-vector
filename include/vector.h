@@ -95,6 +95,7 @@ public:
     /// Destructs the list.
     ~vector()
     {
+        delete[] data;
     }
 
     /// Copy assignment operator.
