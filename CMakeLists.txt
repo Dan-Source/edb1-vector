@@ -23,11 +23,13 @@ include_directories( include )
 #=== Test target ===
 
 # The file(GLOB...) allows for wildcard additions:
-file(GLOB SOURCES_TEST "test/*.cpp" )
+#file(GLOB SOURCES_TEST "test/*.cpp" )
+file(GLOB SOURCES_TEST "src/*.cpp" )
 
 # Define the sources
-add_executable(run_tests ${SOURCES_TEST} )
+#add_executable(run_tests ${SOURCES_TEST} )
+add_executable(run_drive ${SOURCES_TEST} )
 
 # Link with the google test libraries.
-target_link_libraries(run_tests PRIVATE ${GTEST_LIBRARIES} PRIVATE pthread)
+#target_link_libraries(run_tests PRIVATE ${GTEST_LIBRARIES} PRIVATE pthread)
 

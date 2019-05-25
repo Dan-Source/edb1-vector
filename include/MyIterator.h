@@ -1,10 +1,25 @@
+/**
+ * @file
+ * @author Eduardo Sarmento <cealvesarmento@gmail.com> & Victor Vieira <victor@agenciaatwork.com>
+ * @version 1.0
+ * 
+ * @section DESCRIPTION
+ * 
+ * Iterator used by the vector class.
+ */
+
+/**
+ * @brief Iterator class
+ * @author Eduardo Sarmento & Victor Vieira
+ * 
+ * A simple iterator class that is used by the main vector class.
+ */
 template <typename T>
 class MyIterator
 {
 public:
   // Below we have the iterator_traits common interface
-  /// Difference type used to calculated distance between iterators.
-  typedef std::ptrdiff_t difference_type;
+  typedef std::ptrdiff_t difference_type;                    //!< Difference type used to calculated distance between iterators.
   typedef T value_type;                                      //!< Value type the iterator points to.
   typedef T *pointer;                                        //!< Pointer to the value type.
   typedef T &reference;                                      //!< Reference to the value type.

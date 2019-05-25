@@ -1,3 +1,12 @@
+/**
+ * @file
+ * @author Eduardo Sarmento <cealvesarmento@gmail.com> & Victor Vieira <victor@agenciaatwork.com>
+ * @version 1.0
+ * 
+ * @section DESCRIPTION
+ * 
+ * Implementation of a vector in C++.
+ */
 #ifndef VECTOR_H
 #define VECTOR_H
 
@@ -14,6 +23,12 @@
 
 namespace sc
 {
+/**
+ * @brief Vector data structure
+ * @author Eduardo Sarmento & Victor Vieira
+ * 
+ * A simple class that implements a one-dimensional array with dynamic allocation know as vector.
+ */
 template <typename T>
 class vector
 {
@@ -23,8 +38,8 @@ public:
     using pointer = value_type *;               //!< Pointer to a value stored in the container.
     using reference = value_type &;             //!< Reference to a value stored in the container.
     using const_reference = const value_type &; //!< Const reference to a value stored in the container.
-    using iterator = MyIterator<T>;             // See Code 3
-    using const_iterator = MyIterator<const T>; // See Code 3
+    using iterator = MyIterator<T>;             //!< Iterator that points to a specific element of type T.
+    using const_iterator = MyIterator<const T>; //!< Const iterator that points to a specific element of type T.
 
     //=== [I] SPECIAL MEMBERS
     /// Default constructor that creates an empty list.
@@ -109,21 +124,28 @@ public:
     }
 
     //=== [II] ITERATORS
+    /// Returns an iterator pointing to the first item in the list.
     iterator begin()
     {
         iterator it(&data[0]);
         return it;
     }
+
+    /// Returns an iterator pointing to the end mark in the list, i.e. the position just after the last element of the list.
     iterator end()
     {
         iterator it(&data[SIZE]);
         return it;
     }
+
+    /// Returns a constant iterator pointing to the first item in the list.
     const_iterator cbegin() const
     {
         const_iterator it(&data[0]);
         return it;
     }
+
+    /// Returns a constant iterator pointing to the end mark in the list, i.e. the position just after the last element of the list.
     const_iterator cend(void) const
     {
         const_iterator it(&data[SIZE]);
@@ -486,9 +508,9 @@ public:
     }
 
 private:
-    size_type SIZE;
-    size_type CAPACITY;
-    T *data;
+    size_type SIZE;     //!< Logical size of vector, i.e. the amount of elements stored.
+    size_type CAPACITY; //!< Available amount of elements that can be stored with current allocation.
+    T *data;            //!< Array that actually stores the elements of the vector.
 };
 } // namespace sc
 
