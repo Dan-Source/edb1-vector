@@ -227,6 +227,7 @@ public:
             newData[i] = data[i];
 
         data = newData;
+        delete[] newData;
     }
 
     /// Requests the removal of unused capacity.
@@ -239,6 +240,7 @@ public:
             newData[i] = data[i];
 
         data = newData;
+        delete[] newData;
     }
 
     /// Adds value into the list before the position given by the iterator
@@ -349,6 +351,7 @@ public:
             newData[i] = value;
 
         data = newData;
+        delete[] newData;
     }
 
     /// Replaces the contents of the list with copies of the elements in the `std::initializer_list`
@@ -365,6 +368,7 @@ public:
             data[i] = *(ilist.begin() + i);
 
         data = newData;
+        delete[] newData;
     }
 
     /// Replaces the contents of the list with copies of the elements in the range [first; last)
@@ -387,6 +391,7 @@ public:
         }
 
         data = newData;
+        delete[] newData;
     }
 
     /// Removes elements in the range [first; last) and returns an iterator to the element that follows last before the call.
