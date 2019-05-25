@@ -15,13 +15,12 @@ In this project, we developed the list *Abstract Data Type (ADT)*. We focus on t
 
 ## 2. Compiling
 
-For compile this project you must have installed [CMake](cmake.org) on your machine and the [GTest](https://github.com/google/googletest), with all setted up, just run `make` for configure and build the `run_tests` binary file.
+To compile this project you must have installed [CMake](cmake.org) on your machine, with all setted up, just run `make` to configure and build the `run_drive` binary file.
 
-> The GTest will execute _31 tests_ projected by Tchr. Selan Rodrigues, testing many ways to use the vector and its classes.
-
+> You may use your own `driver.cpp` file, using our vector as you want.
 ## 3. Using
 
-You may use the [Doxygen](http://www.doxygen.nl/) documentation for verify the methods and its uses.
+You may use the [Doxygen](http://www.doxygen.nl/) documentation to verify the methods and its uses.
 
 ## 4. Authorship
 
